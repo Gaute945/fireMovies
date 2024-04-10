@@ -1,0 +1,34 @@
+name: Deploy to Firebase
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: Install Firebase CLI
+        run: npm install -g firebase-tools
+
+      - name: Build and Deploy
+        env:
+          apiKey: ${{ secrets.apiKey }}
+          authDomain: ${{ secrets.authDomain }}
+          projectId: ${{ secrets.projectId }}
+          storageBucket: ${{ secrets.storageBucket }}
+          messagingSenderId: ${{ secrets.messagingSenderId }}
+          appId: ${{ secrets.apiId }}
+        run: |
+          npm install
+          npm run build
+          firebase deploy --token $apiKey
